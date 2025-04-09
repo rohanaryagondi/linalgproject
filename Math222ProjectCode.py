@@ -18,8 +18,8 @@ numeric = [col for col in X.columns if col not in categorical]
 # Data prep
 preprocessor = ColumnTransformer(
     transformers=[
-        ("num", StandardScaler(), numeric),
-        ("cat", OneHotEncoder(drop='first', sparse_output=False)
+        ("num", StandardScaler(), numeric), # Z score normalize numeric columns
+        ("cat", OneHotEncoder(drop='first', sparse_output=False) # One-hot encode categorical columns
          , categorical)
     ]
 )
@@ -29,7 +29,8 @@ X_processed = preprocessor.fit_transform(X)
 encoded_pose_names = preprocessor.named_transformers_["cat"].get_feature_names_out(["pose"])
 all_feature_names = numeric + list(encoded_pose_names)
 
-svd = TruncatedSVD(n_components=2)
+# Apply SVD
+svd = TruncatedSVD(n_components=2) # Reduce to 2 components
 svd_components = svd.fit_transform(X_processed)
 component_matrix = svd.components_
 
